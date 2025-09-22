@@ -15,9 +15,6 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="alunos", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email", "cpf", "telefone"})
-})
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +29,7 @@ public class Aluno {
     @Column(name="cpf", length=14, nullable=false, unique=true)
     private String cpf;
 
-    @NotNull(message="A faixa é obrigatória!")
+    @NotBlank(message="A faixa é obrigatória!")
     @Enumerated(EnumType.STRING)
     private Faixa faixa;
 
@@ -44,7 +41,7 @@ public class Aluno {
     @Size(max=15, message="O e-mail deve ter até 100 caracteres!")
     @NotBlank(message = "O e-mail é obrigatório.")
     @Email(message = "O formato do e-mail é inválido.")
-    @Column(name = "email", length = 100, nullable = false, unique=true)
+    @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
     @Column(name = "turma", length = 20, nullable = false)
@@ -60,10 +57,5 @@ public class Aluno {
     @Future
     @Column(name = "data_prox_graduacao")
     private LocalDate dataProxGraduacao;
-
-    //IDADE!!????
-
-    //BidingResult com metodo rejectValue para atributos unicos (ex: email ja cadastrado!)
-    //deve ter no cadastrar e no atualizar
 
 }
