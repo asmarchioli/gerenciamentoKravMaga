@@ -3,6 +3,7 @@ package com.alexandre.gerenciamentoKravMaga.service;
 import com.alexandre.gerenciamentoKravMaga.model.Aluno;
 import com.alexandre.gerenciamentoKravMaga.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +13,8 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public List<Aluno> listarTodos(){
-        return alunoRepository.findAll();
+    public List<Aluno> listarTodos() {
+        return alunoRepository.findAll(Sort.by("nome").ascending());
     }
 
     public Optional<Aluno> pesquisarPorId(Long id){

@@ -64,7 +64,7 @@ public class AlunoController {
             ra.addFlashAttribute("msgErro", "Aluno não encontrar!");
         } else {
             alunoService.deletarPorId(id);
-            ra.addFlashAttribute("msgSucesso", "Aluno excluído com sucesso!")
+            ra.addFlashAttribute("msgSucesso", "Aluno excluído com sucesso!");
         }
         return "redirect:/alunos";
     }
