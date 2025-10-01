@@ -5,14 +5,13 @@ import com.alexandre.gerenciamentoKravMaga.model.Faixa;
 import com.alexandre.gerenciamentoKravMaga.service.AlunoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/alunos")
@@ -28,17 +27,35 @@ public class AlunoController {
 
     @GetMapping("/novo")
     public String mostrarFormularioNovo(Model model){
-        model.addAttribute("alunos", new Aluno());
+        model.addAttribute("aluno", new Aluno());
         model.addAttribute("faixas", Faixa.values());
         return "alunos/form";
     }
 
-    @PostMapping()
+    @PostMapping
     public String cadastrarAluno(@Valid @ModelAttribute Aluno aluno,
-                                  BindingResult erros,
+                                  BindingResult result,
                                   Model model,
                                   RedirectAttributes ra){
-        if (erros.hasErrors()) {
+        //VALIDAÇÃO DE UNICIDADE PARA CPF
+        Optional<Aluno> alunoExistenteCpf = alunoService.pesquisarPorCPF(aluno.getCpf());
+        if (alunoExistenteCpf.isPresent() && !alunoExistenteCpf.get().getId().equals(aluno.getId())) {
+            result.rejectValue("cpf", "error.aluno", "CPF já cadastrado no sistema.");
+        }
+
+        //VALIDAÇÃO DE UNICIDADE PARA TELEFONE
+        Optional<Aluno> alunoExistenteTelefone = alunoService.pesquisarPorTelefone(aluno.getTelefone());
+        if (alunoExistenteTelefone.isPresent() && !alunoExistenteTelefone.get().getId().equals(aluno.getId())) {
+            result.rejectValue("telefone", "error.aluno", "Telefone já cadastrado no sistema.");
+        }
+
+        //VALIDAÇÃO DE UNICIDADE PARA E-MAIL
+        Optional<Aluno> alunoExistenteEmail = alunoService.pesquisarPorEmail(aluno.getEmail());
+        if (alunoExistenteEmail.isPresent() && !alunoExistenteEmail.get().getId().equals(aluno.getId())) {
+            result.rejectValue("email", "error.aluno", "E-mail já cadastrado no sistema.");
+        }
+
+        if (result.hasErrors()) {
             model.addAttribute("faixas", Faixa.values());
             return "alunos/form";
         }
@@ -47,7 +64,7 @@ public class AlunoController {
         return "redirect:/alunos";
     }
 
-    @GetMapping("editar/{id}")
+    @GetMapping("/editar/{id}")
     public String abrirEdicao(@PathVariable Long id, Model model, RedirectAttributes ra){
         if(!(alunoService.existsById(id))){
             ra.addFlashAttribute("msgErro", "Aluno não encontrado!");
@@ -58,7 +75,7 @@ public class AlunoController {
         return "alunos/form";
     }
 
-    @GetMapping("deletar/{id}")
+    @GetMapping("/deletar/{id}")
     public String deletarAluno(@PathVariable Long id, RedirectAttributes ra){
         if (!alunoService.existsById(id)){
             ra.addFlashAttribute("msgErro", "Aluno não encontrar!");
@@ -68,6 +85,4 @@ public class AlunoController {
         }
         return "redirect:/alunos";
     }
-
-
 }

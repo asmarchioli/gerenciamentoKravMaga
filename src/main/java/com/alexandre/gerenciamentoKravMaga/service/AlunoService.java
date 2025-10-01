@@ -29,6 +29,10 @@ public class AlunoService {
         return alunoRepository.findByEmailIgnoreCase(email);
     }
 
+    public Optional<Aluno> pesquisarPorTelefone(String telefone){
+        return alunoRepository.findByTelefone(telefone);
+    }
+
     public List<Aluno> pesquisarPorNome(String nome){
         return alunoRepository.findByNomeContainingIgnoreCase(nome);
     }

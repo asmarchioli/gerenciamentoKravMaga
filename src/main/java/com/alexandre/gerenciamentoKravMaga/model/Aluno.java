@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="", uniqueConstraints = {
+@Table(name="alunos", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email", "cpf", "telefone"})
 })
 public class Aluno {
@@ -32,7 +32,7 @@ public class Aluno {
     @Column(name="cpf", length=14, nullable=false, unique=true)
     private String cpf;
 
-    @NotBlank(message="A faixa é obrigatória!")
+    @NotNull(message="A faixa é obrigatória!")
     @Enumerated(EnumType.STRING)
     private Faixa faixa;
 

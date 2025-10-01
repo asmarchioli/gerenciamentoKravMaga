@@ -2,23 +2,43 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Gerenciamento Escola Krav Maga Caveira</title>
+    <title>Sistema de Gerenciamento - Krav Maga</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
     <link rel="icon" th:href="@{/caveira-icon.png}">
-    <style>
-        <!-- Não funciona, por algum motivo -->
-        body, html {
-            height: 100%;
-        }
-        .vertical-center {
-            min-height: 100%;
-            display: flex;
-            align-items: center;
-        }
-    </style>
 </head>
 <body>
-    <h1>Sistema de Gerenciamento da Escola Krav Maga Caveira</h1>
-    <p>Bem-vindo, usuário! Utilize este sistema para gerenciar os alunos, turmas e graduações.</p>
-    <a th:href="@{/alunos}">Gerenciar Alunos</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: firebrick;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-decoration-underline" th:href="@{/}">Krav Maga K4VEIRA</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/alunos}">Alunos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/alunos/novo}">Novo</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="container mt-5 vh-100 d-flex align-items-center justify-content-center">
+    <div class="p-5 mb-5 bg-secondary rounded-5 text-center">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold">Sistema de Gerenciamento da Escola de<br>Krav Maga <span style="color: firebrick">K4VEIRA</span></h1>
+            <p class="col-md-8 fs-4 mx-auto">
+                Bem-vindo, usuário. Utilize este sistema para gerenciar os alunos, turmas e graduações.
+            </p>
+            <a th:href="@{/alunos}" class="btn btn-lg mt-3" style="background-color: firebrick;">
+                Ir para a lista
+            </a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
