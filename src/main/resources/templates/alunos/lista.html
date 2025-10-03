@@ -28,14 +28,40 @@
     <h1>Gerenciamento de Alunos</h1>
     <hr>
 
+    <!--/*@thymesVar id="msgSucesso" type="java.lang.String"*/-->
     <div th:if="${msgSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${msgSucesso}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <!--/*@thymesVar id="msgErro" type="java.lang.String"*/-->
     <div th:if="${msgErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
         <span th:text="${msgErro}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+
+
+    <!--FORMULÁRIO DE BUSCA -->
+    <form th:action="@{/alunos}" method="get" class="row g-3 mb-3 align-items-center">
+        <div class="col-md-3">
+            <label for="tipo_busca" class="visually-hidden">Buscar por</label>
+            <select name="tipo_busca" id="tipo_busca" class="form-select">
+                <option value="nome" th:selected="${tipo_busca == 'nome'}">Buscar por Nome</option>
+                <option value="cpf" th:selected="${tipo_busca == 'cpf'}">Buscar por CPF</option>
+                <option value="email" th:selected="${tipo_busca == 'email'}">Buscar por E-mail</option>
+                <option value="telefone" th:selected="${tipo_busca == 'telefone'}">Buscar por Telefone</option>
+            </select>
+        </div>
+        <div class="col-md-7">
+            <label for="termo_busca" class="visually-hidden">Termo da Busca</label>
+            <input type="text" name="termo_busca" id="termo_busca" class="form-control" placeholder="Digite aqui..." th:value="${termo_busca}">
+        </div>
+        <div class="col-md-2 d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn" style="background-color: firebrick">Buscar</button>
+            <a th:href="@{/alunos}" class="btn btn-secondary">Limpar</a>
+        </div>
+    </form>
+
+
 
     <a th:href="@{/alunos/novo}" class="btn mb-3" style="background-color: firebrick">Adicionar Novo Aluno</a>
 
@@ -65,8 +91,8 @@
                     <td th:text="${aluno.email}"></td>
                     <td th:text="${aluno.turma}"></td>
                     <td th:text="${aluno.endereco}"></td>
-                    <td th:text="${aluno.dataNascimento}"></td>
-                    <td th:text="${aluno.dataProxGraduacao}"></td>
+                    <td th:text="${aluno.dataNascimento != null ? #temporals.format(aluno.dataNascimento, 'dd/MM/yyyy') : ''}"></td>
+                    <td th:text="${aluno.dataProxGraduacao != null ? #temporals.format(aluno.dataProxGraduacao, 'dd/MM/yyyy') : ''}"></td>
                     <td>
                         <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" class="btn btn-warning btn-sm">Editar</a>
                         <button type="button" class="btn btn-danger btn-sm"
@@ -102,16 +128,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    var confirmacaoModal = document.getElementById('confirmacaoExclusaoModal');
+    const confirmacaoModal = document.getElementById('confirmacaoExclusaoModal');
 
     confirmacaoModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var alunoId = button.getAttribute('data-aluno-id');
-        var alunoNome = button.getAttribute('data-aluno-nome');
-        var modalNomeAluno = confirmacaoModal.querySelector('#nomeAlunoModal');
+        const button = event.relatedTarget;
+        const alunoId = button.getAttribute('data-aluno-id');
+        const alunoNome = button.getAttribute('data-aluno-nome');
+        const modalNomeAluno = confirmacaoModal.querySelector('#nomeAlunoModal');
         modalNomeAluno.textContent = alunoNome;
 
-        var linkExcluir = confirmacaoModal.querySelector('#linkExcluirAluno');
+        const linkExcluir = confirmacaoModal.querySelector('#linkExcluirAluno');
         linkExcluir.href = '/alunos/deletar/' + alunoId;
     });
 </script>
