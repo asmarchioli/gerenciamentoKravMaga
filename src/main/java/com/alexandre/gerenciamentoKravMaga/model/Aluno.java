@@ -42,7 +42,7 @@ public class Aluno {
     @Column(name="telefone", length=15, nullable=false, unique=true)
     private String telefone;
 
-    @Size(max=15, message="O e-mail deve ter até 100 caracteres!")
+    @Size(max=100, message="O e-mail deve ter até 100 caracteres!")  //COMENTAR SOBRE ERRO NO GIT! (max=15)
     @NotBlank(message = "O e-mail é obrigatório.")
     @Email(message = "O formato do e-mail é inválido.")
     @Column(name = "email", length = 100, nullable = false, unique=true)

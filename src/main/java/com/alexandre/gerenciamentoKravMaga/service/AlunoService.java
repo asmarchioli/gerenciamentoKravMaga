@@ -26,7 +26,6 @@ public class AlunoService {
     public Optional<Aluno> buscarPorCPF(String cpf){
         return alunoRepository.findByCpf(cpf);
     }
-
     public Optional<Aluno> buscarPorEmail(String email){
         return alunoRepository.findByEmailIgnoreCase(email);
     }

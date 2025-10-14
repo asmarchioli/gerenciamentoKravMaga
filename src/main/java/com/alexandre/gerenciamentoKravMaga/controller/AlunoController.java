@@ -98,7 +98,7 @@ public class AlunoController {
     @GetMapping("/deletar/{id}")
     public String deletarAluno(@PathVariable Long id, RedirectAttributes ra){
         if (!alunoService.existsById(id)){
-            ra.addFlashAttribute("msgErro", "Aluno não encontrar!");
+            ra.addFlashAttribute("msgErro", "Aluno não encontrado!");
         } else {
             alunoService.deletarPorId(id);
             ra.addFlashAttribute("msgSucesso", "Aluno excluído com sucesso!");
