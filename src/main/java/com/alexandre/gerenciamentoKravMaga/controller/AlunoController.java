@@ -27,6 +27,11 @@ public class AlunoController {
     public String listarAlunos(@RequestParam(name="tipo_busca", required=false, defaultValue="nome") String tipo_busca,
                                 @RequestParam(name="termo_busca", required=false) String termo_busca,
                                 Model model, HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
+
         if (termo_busca != null){
             session.setAttribute("termo_busca_sessao", termo_busca);
             session.setAttribute("tipo_busca_sessao", tipo_busca);
@@ -53,7 +58,12 @@ public class AlunoController {
     }
 
     @GetMapping("/novo")
-    public String mostrarFormularioNovo(Model model){
+    public String mostrarFormularioNovo(Model model, HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
+
         model.addAttribute("aluno", new Aluno());
         model.addAttribute("faixas", Faixa.values());
         return "alunos/form";
@@ -61,6 +71,11 @@ public class AlunoController {
 
     @GetMapping("/limpar-filtro")
     public String limparFiltro(HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
+
         session.removeAttribute("tipo_busca_sessao");
         session.removeAttribute("termo_busca_sessao");
         return "redirect:/alunos";
@@ -70,7 +85,12 @@ public class AlunoController {
     public String cadastrarAluno(@Valid @ModelAttribute Aluno aluno,
                                   BindingResult result,
                                   Model model,
-                                  RedirectAttributes ra){
+                                  RedirectAttributes ra,
+                                 HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
         alunoService.salvar(aluno, result);
 
         if (result.hasErrors()) {
@@ -83,7 +103,12 @@ public class AlunoController {
     }
 
     @GetMapping("/editar/{id}")
-    public String abrirEdicao(@PathVariable Long id, Model model, RedirectAttributes ra){
+    public String abrirEdicao(@PathVariable Long id, Model model, RedirectAttributes ra, HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
+
         Optional<Aluno> aluno = alunoService.pesquisarPorId(id);
         if (aluno.isPresent()) {
             model.addAttribute("aluno", aluno.get());
@@ -97,7 +122,12 @@ public class AlunoController {
 
 
     @GetMapping("/deletar/{id}")
-    public String deletarAluno(@PathVariable Long id, RedirectAttributes ra){
+    public String deletarAluno(@PathVariable Long id, RedirectAttributes ra, HttpSession session){
+        //PROTEÇÃO
+        if (session.getAttribute("usuarioLogado") == null) {
+            return "redirect:/login"; //Se não está logado, redireciona para o login
+        }
+
         if (!alunoService.existsById(id)){
             ra.addFlashAttribute("msgErro", "Aluno não encontrado!");
         } else {
