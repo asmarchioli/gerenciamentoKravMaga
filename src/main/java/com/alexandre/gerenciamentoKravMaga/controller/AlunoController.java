@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/alunos")
@@ -25,21 +26,29 @@ public class AlunoController {
     @GetMapping
     public String listarAlunos(@RequestParam(name="tipo_busca", required=false, defaultValue="nome") String tipo_busca,
                                 @RequestParam(name="termo_busca", required=false) String termo_busca,
-                                Model model){
+                                Model model, HttpSession session){
+        if (termo_busca != null){
+            session.setAttribute("termo_busca_sessao", termo_busca);
+            session.setAttribute("tipo_busca_sessao", tipo_busca);
+        }
+
+        String tipo_busca_sessao = (String) session.getAttribute("tipo_busca_sessao");
+        String termo_busca_sessao = (String) session.getAttribute("termo_busca_sessao");
+
         List<Aluno> alunos;
-        if (termo_busca != null && !termo_busca.trim().isEmpty()) {
-            alunos = switch (tipo_busca) {
-                            case "cpf" -> alunoService.pesquisarPorCPF(termo_busca);
-                            case "email" -> alunoService.pesquisarPorEmail(termo_busca);
-                            case "telefone" -> alunoService.pesquisarPorTelefone(termo_busca);
-                            default -> alunoService.pesquisarPorNome(termo_busca);
+        if (termo_busca_sessao != null && !termo_busca_sessao.trim().isEmpty()) {
+            alunos = switch (tipo_busca_sessao) {
+                            case "cpf" -> alunoService.pesquisarPorCPF(termo_busca_sessao);
+                            case "email" -> alunoService.pesquisarPorEmail(termo_busca_sessao);
+                            case "telefone" -> alunoService.pesquisarPorTelefone(termo_busca_sessao);
+                            default -> alunoService.pesquisarPorNome(termo_busca_sessao);
             };
         } else {
             alunos = alunoService.listarTodos();
         }
         model.addAttribute("alunos", alunos);
-        model.addAttribute("termo_busca", termo_busca);
-        model.addAttribute("tipo_busca", tipo_busca);
+        model.addAttribute("termo_busca", termo_busca_sessao);
+        model.addAttribute("tipo_busca", tipo_busca_sessao);
         return "alunos/lista";
     }
 
@@ -50,34 +59,25 @@ public class AlunoController {
         return "alunos/form";
     }
 
+    @GetMapping("/limpar-filtro")
+    public String limparFiltro(HttpSession session){
+        session.removeAttribute("tipo_busca_sessao");
+        session.removeAttribute("termo_busca_sessao");
+        return "redirect:/alunos";
+    }
+
     @PostMapping
     public String cadastrarAluno(@Valid @ModelAttribute Aluno aluno,
                                   BindingResult result,
                                   Model model,
                                   RedirectAttributes ra){
-        //VALIDAÇÃO DE UNICIDADE PARA CPF
-        Optional<Aluno> alunoExistenteCpf = alunoService.buscarPorCPF(aluno.getCpf());
-        if (alunoExistenteCpf.isPresent() && !alunoExistenteCpf.get().getId().equals(aluno.getId())) {
-            result.rejectValue("cpf", "error.aluno", "CPF já cadastrado no sistema.");
-        }
-
-        //VALIDAÇÃO DE UNICIDADE PARA TELEFONE
-        Optional<Aluno> alunoExistenteTelefone = alunoService.buscarPorTelefone(aluno.getTelefone());
-        if (alunoExistenteTelefone.isPresent() && !alunoExistenteTelefone.get().getId().equals(aluno.getId())) {
-            result.rejectValue("telefone", "error.aluno", "Telefone já cadastrado no sistema.");
-        }
-
-        //VALIDAÇÃO DE UNICIDADE PARA E-MAIL
-        Optional<Aluno> alunoExistenteEmail = alunoService.buscarPorEmail(aluno.getEmail());
-        if (alunoExistenteEmail.isPresent() && !alunoExistenteEmail.get().getId().equals(aluno.getId())) {
-            result.rejectValue("email", "error.aluno", "E-mail já cadastrado no sistema.");
-        }
+        alunoService.salvar(aluno, result);
 
         if (result.hasErrors()) {
             model.addAttribute("faixas", Faixa.values());
             return "alunos/form";
         }
-        alunoService.salvar(aluno);
+
         ra.addFlashAttribute("msgSucesso", "Aluno cadastrado com sucesso!");
         return "redirect:/alunos";
     }
@@ -94,6 +94,7 @@ public class AlunoController {
             return "redirect:/alunos";
         }
     }
+
 
     @GetMapping("/deletar/{id}")
     public String deletarAluno(@PathVariable Long id, RedirectAttributes ra){

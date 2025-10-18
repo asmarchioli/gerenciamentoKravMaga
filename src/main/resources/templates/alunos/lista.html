@@ -50,6 +50,7 @@
                 <option value="email" th:selected="${tipo_busca == 'email'}">Buscar por E-mail</option>
                 <option value="telefone" th:selected="${tipo_busca == 'telefone'}">Buscar por Telefone</option>
             </select>
+
         </div>
         <div class="col-md-7">
             <label for="termo_busca" class="visually-hidden">Termo da Busca</label>
@@ -57,10 +58,12 @@
         </div>
         <div class="col-md-2 d-grid gap-2 d-md-flex">
             <button type="submit" class="btn" style="background-color: firebrick">Buscar</button>
-            <a th:href="@{/alunos}" class="btn btn-secondary">Limpar</a>
+            <a th:href="@{/alunos/limpar-filtro}" class="btn btn-secondary">Limpar</a>
         </div>
     </form>
-
+    <p th:if="${session.termo_busca_sessao != null && !session.termo_busca_sessao.trim().isEmpty()}">
+        Filtro ativo: <strong th:text="${session.termo_busca_sessao}"></strong>
+    </p>
 
 
     <a th:href="@{/alunos/novo}" class="btn mb-3" style="background-color: firebrick">Adicionar Novo Aluno</a>
