@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Krav Maga K4VEIRA System</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
+    <link rel="icon" th:href="@{/caveira-icon.png}">
+</head>
+
+
+
+
+<body class="flex-column vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: firebrick;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-decoration-underline" th:href="@{/}">Krav Maga K4VEIRA</a>
+    </div>
+</nav>
+
+<div class="container justify-content-center align-items-center vh-100 d-flex " style="max-width: 400px;">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">Faça seu login</h2>
+            <hr>
+
+            <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="login" class="form-label">Usuário</label>
+                    <input type="text" class="form-control" id="login" name="login" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

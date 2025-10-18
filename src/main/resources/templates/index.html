@@ -12,29 +12,46 @@
     <div class="container-fluid">
         <a class="navbar-brand text-decoration-underline" th:href="@{/}">Krav Maga K4VEIRA</a>
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/alunos}">Alunos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/alunos/novo}">Novo</a>
-                </li>
+            <ul class="navbar-nav me-auto">
+                <th:block th:if="${session.usuarioLogado != null}">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/alunos}">Alunos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/alunos/novo}">Novo</a>
+                    </li>
+                </th:block>
             </ul>
+            <div th:if="${session.usuarioLogado != null}" class="d-flex align-items-center">
+                <span class="navbar-text me-3">
+                    Bem-vindo, <strong th:text="${session.usuarioLogado}"></strong>
+                </span>
+                <a th:href="@{/logout}" class="btn btn-outline-light">Logout</a>
+            </div>
+            <div th:if="${session.usuarioLogado == null}">
+                <a th:href="@{/login}" class="btn btn-outline-light">Login</a>
+            </div>
         </div>
     </div>
 </nav>
-
-
 
 <div class="container mt-5 vh-100 d-flex align-items-center justify-content-center">
     <div class="p-5 mb-5 bg-secondary rounded-5 text-center">
         <div class="container-fluid py-3">
             <h1 class="display-5 fw-bold">Sistema de Gerenciamento da Escola de<br>Krav Maga <span style="color: firebrick">K4VEIRA</span></h1>
-            <p class="col-md-8 fs-4 mx-auto">
-                Bem-vindo, usuário. Utilize este sistema para gerenciar os alunos, turmas e graduações.
+
+            <p class="col-md-8 fs-4 mx-auto" th:if="${session.usuarioLogado != null}">
+                Bem-vindo, <strong th:text="${session.usuarioLogado}"></strong>. Utilize este sistema para gerenciar os alunos, turmas e graduações.
             </p>
-            <a th:href="@{/alunos}" class="btn btn-lg mt-3" style="background-color: firebrick;">
+            <p class="col-md-8 fs-4 mx-auto" th:if="${session.usuarioLogado == null}">
+                Por favor, faça o login para acessar o sistema.
+            </p>
+
+            <a th:if="${session.usuarioLogado != null}" th:href="@{/alunos}" class="btn btn-lg mt-3" style="background-color: firebrick;">
                 Ir para a lista
+            </a>
+            <a th:if="${session.usuarioLogado == null}" th:href="@{/login}" class="btn btn-lg mt-3" style="background-color: firebrick;">
+                Fazer Login
             </a>
         </div>
     </div>
